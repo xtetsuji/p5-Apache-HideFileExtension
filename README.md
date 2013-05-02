@@ -19,7 +19,7 @@ or using cpanm:
 
 #DEPENDENCIES
 
-This module has dependencies only mod\_perl2 core modules.
+This module has dependencies only mod\_perl1 core modules.
 
 #COPYRIGHT AND LICENCE
 
