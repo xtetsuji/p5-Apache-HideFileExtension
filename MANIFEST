@@ -1,0 +1,7 @@
+Changes
+Makefile.PL
+MANIFEST
+META.json
+README
+t/00compile.t
+lib/Apache/HideFileExtension.pm
