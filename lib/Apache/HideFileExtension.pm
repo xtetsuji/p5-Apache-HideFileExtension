@@ -16,23 +16,21 @@ sub handler {
     return DECLINED if !$r->is_initial_req;
 
     my $hide_ext = $r->dir_config->get('HideExtension') || '.html';
-    my $schema   = 'http://'; # for internal redirect. TOOD: under SSL env?
-    my $hostname = $r->hostname;
-    my $uri      = $r->uri;
     my $filename = $r->filename;
-    my $url      = $schema . $hostname . $uri;
 
     $hide_ext = '.' . $hide_ext if 0 != index $hide_ext, '.';
 
     if ( $filename =~ /\Q$hide_ext\E$/ ) {
+        my $schema   = 'http://'; # for internal redirect. TOOD: under SSL env?
+        my $url      = $schema . $r->hostname . $r->uri;
         $url =~ s/\Q$hide_ext\E$//
             or return DECLINED;
         $r->headers_out->set( Location => $url );
         return HTTP_MOVED_TEMPORARILY;
     }
     elsif ( -f $filename . $hide_ext ) {
-        $url .= $hide_ext;
-        $r->internal_redirect($url);
+        my $new_uri = $r->uri . $hide_ext;
+        $r->internal_redirect($new_uri);
         return OK;
     }
 
@@ -68,8 +66,7 @@ This modules hide your specify file extension on some context
 =head1 MECHANISM
 
 This module is recommended to hook at B<PerlHeaderPerserHandler>,
-because we want to finished "URL Trans Phase" (PerlTransHandler) and
-"Map to Storage Phase" (PerlMapToStorageHandler).
+because we want to finished "URL Trans Phase" (PerlTransHandler).
 In this situation, finally URL and it's file path are determined.
 
 This module searches either the file path is exists or not.
